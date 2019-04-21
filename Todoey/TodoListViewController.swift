@@ -12,9 +12,16 @@ class TodoListViewController: UITableViewController {
 
     var itemArray = ["1","2","3"]
     
+    let defaults = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        if let items = UserDefaults.standard.array(forKey: "TodoListArray") as? [String] {
+            itemArray = items
+        }
+        
+        
     }
 
     //MARK - Tableview Datasource Methods
@@ -33,8 +40,6 @@ class TodoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         //print(itemArray[indexPath.row])
-        tableView.deselectRow(at: indexPath, animated: true)
-
         
         if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
             tableView.cellForRow(at: indexPath)?.accessoryType = .none
@@ -42,7 +47,7 @@ class TodoListViewController: UITableViewController {
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         }
         
-        //tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
         
     }
     
@@ -56,6 +61,7 @@ class TodoListViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             self.itemArray.append(textField.text!)
+            self.defaults.set(self.itemArray, forKey: "TodoListArray")
             self.tableView.reloadData()
         }
         
